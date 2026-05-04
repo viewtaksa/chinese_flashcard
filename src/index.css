@@ -19,3 +19,18 @@
 .rotate-y-180 {
   transform: rotateY(180deg);
 }
+
+@keyframes cardShuffleLeft {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-100%); }
+}
+
+@keyframes cardSlideOutRight {
+  from { transform: translateX(0); }
+  to   { transform: translateX(100%); }
+}
+
+@keyframes cardShuffleBack {
+  from { transform: translateX(-100%) scale(0.88); }
+  to   { transform: translateX(0%)    scale(0.88); }
+}

@@ -2,37 +2,53 @@ import { useState } from "react";
 import LevelSelector from "./components/LevelSelector";
 import Flashcard from "./components/FlashCard";
 import NavBar from "./components/NavBar";
+import QuizLevelSelector from "./components/wordquiz/WordQuizLevelSelector";
+import QuizSession from "./components/wordquiz/WordQuizSession";
+import SentenceModeSelector from "./components/sentences/SentenceModeSelector";
+import SentenceLevelSelector from "./components/sentences/SentenceLevelSelector";
+import SentenceSession from "./components/sentences/SentenceSession";
+import FillSession from "./components/sentences/FillSession";
+import AboutPage from "./components/AboutPage";
 import { words } from "./data";
 
 export default function App() {
   const [view, setView] = useState("home");
   const [level, setLevel] = useState(null);
 
-  const filteredWords = words.filter(w => w.level === level);
+  const filteredWords = words.filter((w) => w.level === level);
 
-  const beginStudy = () => {
-    setView("study");
-    setLevel(null);
-  };
-
-  const openLevel = (selectedLevel) => {
+  const openStudyLevel = (selectedLevel) => {
     setLevel(selectedLevel);
     setView("flashcards");
+  };
+
+  const openQuizLevel = (selectedLevel) => {
+    setLevel(selectedLevel);
+    setView("quiz-session");
+  };
+
+  const openSentenceLevel = (selectedLevel) => {
+    setLevel(selectedLevel);
+    setView("sentence-session");
+  };
+
+  const openFillLevel = (selectedLevel) => {
+    setLevel(selectedLevel);
+    setView("fill-session");
   };
 
   return (
     <div className="min-h-screen bg-[#f5efe6] text-[#1f140f]">
       <NavBar
         view={view}
-        onNavigate={setView}
-        onHome={() => {
-          setView("home");
-          setLevel(null);
+        onNavigate={(v) => {
+          setView(v);
+          if (!["flashcards","quiz-session","sentence-session","fill-session"].includes(v)) setLevel(null);
         }}
       />
 
       <main className="mx-auto w-full max-w-7xl px-4 pb-10 pt-6 sm:px-6 lg:px-8">
-        {view === "home" ? (
+        {view === "home" && (
           <section className="relative overflow-hidden rounded-[2rem] border border-[#e4d7c8] bg-[linear-gradient(180deg,#fbf7f1_0%,#f6eee4_100%)] px-6 py-10 shadow-[0_30px_80px_rgba(93,58,33,0.08)] sm:px-10 sm:py-14 lg:px-14 lg:py-16">
             <div className="absolute inset-0 opacity-40" aria-hidden="true">
               <div className="absolute -right-20 top-8 h-72 w-72 rounded-full bg-[#ead9c7] blur-3xl" />
@@ -49,68 +65,126 @@ export default function App() {
                 </p>
 
                 <h1 className="max-w-xl font-serif text-5xl leading-[0.95] tracking-[-0.04em] text-[#20130d] sm:text-6xl lg:text-7xl">
-                  Learn characters that <span className="italic text-[#d85a43]">actually</span> stay with you
+                  Learn characters that{" "}
+                  <span className="italic text-[#d85a43]">actually</span> stay
+                  with you
                 </h1>
 
                 <p className="mt-7 max-w-2xl text-lg leading-8 text-[#6d5b4f] sm:text-xl">
                   Spaced-repetition flashcards designed for Mandarin learners.
-                  From stroke to sound to meaning, everything is built for fast recall and long-term retention.
+                  From stroke to sound to meaning, everything is built for fast
+                  recall and long-term retention.
                 </p>
 
                 <div className="mt-10 flex flex-col gap-4 sm:flex-row">
                   <button
-                    onClick={beginStudy}
+                    onClick={() => setView("study")}
                     className="inline-flex items-center justify-center rounded-full bg-[#d64934] px-8 py-4 text-base font-semibold text-white shadow-lg shadow-[#d64934]/25 transition hover:-translate-y-0.5 hover:bg-[#c8412e]"
                     type="button"
                   >
                     Begin a session
                   </button>
-                  <button
-                    onClick={beginStudy}
-                    className="inline-flex items-center justify-center rounded-full border border-[#b9aa9a] bg-white/70 px-8 py-4 text-base font-semibold text-[#48352b] shadow-sm transition hover:border-[#9f8d7a] hover:bg-white"
-                    type="button"
-                  >
-                    Browse decks
-                  </button>
                 </div>
 
                 <div className="mt-12 grid gap-6 sm:grid-cols-2">
                   <div>
-                    <div className="font-serif text-4xl text-[#20130d]">6,000+</div>
-                    <div className="mt-1 text-sm uppercase tracking-[0.24em] text-[#8a7767]">vocabulary cards</div>
+                    <div className="font-serif text-4xl text-[#20130d]">
+                      600+
+                    </div>
+                    <div className="mt-1 text-sm uppercase tracking-[0.24em] text-[#8a7767]">
+                      vocabulary cards
+                    </div>
                   </div>
                   <div>
-                    <div className="font-serif text-4xl text-[#20130d]">HSK 1-6</div>
-                    <div className="mt-1 text-sm uppercase tracking-[0.24em] text-[#8a7767]">level coverage</div>
+                    <div className="font-serif text-4xl text-[#20130d]">
+                      HSK 1-4
+                    </div>
+                    <div className="mt-1 text-sm uppercase tracking-[0.24em] text-[#8a7767]">
+                      level coverage
+                    </div>
                   </div>
                 </div>
               </div>
 
               <div className="relative flex min-h-[480px] items-center justify-center">
-                <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(216,191,165,0.35)_0%,rgba(216,191,165,0.08)_42%,transparent_70%)]" aria-hidden="true" />
-
+                <div
+                  className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(216,191,165,0.35)_0%,rgba(216,191,165,0.08)_42%,transparent_70%)]"
+                  aria-hidden="true"
+                />
                 <div className="absolute left-[4%] top-[18%] w-44 rounded-[1.8rem] border border-white/70 bg-white/85 p-5 text-center shadow-[0_20px_45px_rgba(92,60,35,0.12)] backdrop-blur-sm sm:w-48">
                   <div className="font-serif text-5xl text-[#6d6259]">美</div>
                   <div className="mt-2 text-sm text-[#8b7a6b]">beautiful</div>
                 </div>
-
                 <div className="absolute right-[4%] top-[34%] w-56 rounded-[1.8rem] border border-white/70 bg-white/90 p-6 text-center shadow-[0_24px_55px_rgba(92,60,35,0.14)] backdrop-blur-sm sm:w-60">
                   <div className="font-serif text-6xl text-[#1f130d]">爱</div>
-                  <div className="mt-3 text-sm font-semibold text-[#d64934]">ài</div>
+                  <div className="mt-3 text-sm font-semibold text-[#d64934]">
+                    ài
+                  </div>
                   <div className="text-sm text-[#8b7a6b]">love</div>
                 </div>
-
                 <div className="absolute bottom-[6%] left-[18%] right-[18%] h-64 rounded-[2.5rem] border border-[#eadfce] bg-[linear-gradient(180deg,rgba(255,255,255,0.56),rgba(250,243,235,0.85))] shadow-[0_24px_70px_rgba(92,60,35,0.1)]" />
               </div>
             </div>
           </section>
-        ) : view === "study" ? (
+        )}
+
+        {view === "study" && (
           <section className="mx-auto flex min-h-[calc(100vh-8rem)] max-w-4xl items-center justify-center">
-            <LevelSelector onSelect={openLevel} />
+            <LevelSelector onSelect={openStudyLevel} />
           </section>
-        ) : (
+        )}
+
+        {view === "flashcards" && (
           <section className="mx-auto flex min-h-[calc(100vh-8rem)] max-w-4xl items-center justify-center">
-            <Flashcard words={filteredWords} onBack={() => setView("study")} />
+            <Flashcard words={filteredWords} level={level} onBack={() => setView("study")} />
+          </section>
+        )}
+
+        {view === "quiz" && (
+          <section className="mx-auto flex min-h-[calc(100vh-8rem)] max-w-4xl items-center justify-center">
+            <QuizLevelSelector onSelect={openQuizLevel} />
+          </section>
+        )}
+
+        {view === "quiz-session" && level && (
+          <section className="mx-auto flex min-h-[calc(100vh-8rem)] max-w-4xl items-center justify-center py-10">
+            <QuizSession level={level} onBack={() => setView("quiz")} />
+          </section>
+        )}
+
+        {view === "sentences" && (
+          <section className="mx-auto flex min-h-[calc(100vh-8rem)] max-w-4xl items-center justify-center py-6">
+            <SentenceModeSelector onSelect={(mode) => setView(mode === "translate" ? "sentence-translate" : "sentence-fill")} />
+          </section>
+        )}
+
+        {view === "sentence-translate" && (
+          <section className="mx-auto flex min-h-[calc(100vh-8rem)] max-w-4xl items-center justify-center py-6">
+            <SentenceLevelSelector onSelect={openSentenceLevel} mode="translate" />
+          </section>
+        )}
+
+        {view === "sentence-session" && level && (
+          <section className="mx-auto flex min-h-[calc(100vh-8rem)] max-w-4xl items-center justify-center py-10">
+            <SentenceSession level={level} onBack={() => setView("sentence-translate")} />
+          </section>
+        )}
+
+        {view === "sentence-fill" && (
+          <section className="mx-auto flex min-h-[calc(100vh-8rem)] max-w-4xl items-center justify-center py-6">
+            <SentenceLevelSelector onSelect={openFillLevel} mode="fill" />
+          </section>
+        )}
+
+        {view === "fill-session" && level && (
+          <section className="mx-auto flex min-h-[calc(100vh-8rem)] max-w-4xl items-center justify-center py-10">
+            <FillSession level={level} onBack={() => setView("sentence-fill")} />
+          </section>
+        )}
+
+        {view === "about" && (
+          <section className="mx-auto flex min-h-[calc(100vh-8rem)] max-w-4xl items-center justify-center py-10">
+            <AboutPage />
           </section>
         )}
       </main>
